@@ -1,0 +1,38 @@
+{
+  "name": "campus-event-api",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "tsx src/server.ts",
+    "dev:tsx": "npx tsx src/server.ts",
+    "dev:watch": "npx tsc --watch & nodemon dist/server.js",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "morgan": "^1.10.1",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.17",
+    "@types/helmet": "^0.0.48",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^20.11.5",
+    "@types/node-cron": "^3.0.8",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.2.2"
+  }
+}
