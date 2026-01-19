@@ -38,3 +38,5 @@ Performance: Average response time <100ms.
 Automated Logic: Verified Cron Job initialization for 24-hour ticket expiration cycles.
 
 Data Consistency: Automated ticket numbering and inventory management (atomic increments/decrements) verified via PowerShell testing.
+
+Live Demo: https://campus-event-api-izni.onrender.com/health
