@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import Ticket from '../models/Ticket';
 import Event from '../models/Event';
+import fetch from 'node-fetch';
 
 /**
  * Task to expire unpaid tickets that are past their expiration time
@@ -42,15 +43,33 @@ export const expireUnpaidTickets = async (): Promise<void> => {
   }
 };
 
+export const keepServiceAlive = async (): Promise<void> => {
+  if (process.env.NODE_ENV === 'production') {
+    const BASE_URL = process.env.RENDER_EXTERNAL_URL || 'https://campus-event-api-izni.onrender.com';
+    try {
+      await fetch(`${BASE_URL}/health`);
+      console.log('✅ Service pinged to prevent sleep');
+    } catch (error) {
+      console.log('⚠️ Ping failed');
+    }
+  }
+};
+
 /**
  * Initialize all cron jobs
  */
 export const startCronJobs = (): void => {
   // Expire unpaid tickets every hour at minute 0
   cron.schedule('0 * * * *', expireUnpaidTickets);
+
+  // Ping service every 10 minutes to keep alive
+  cron.schedule('*/10 * * * *', keepServiceAlive);
   
   // Run immediately on startup
   expireUnpaidTickets();
+  if (process.env.NODE_ENV === 'production') {
+    keepServiceAlive();
+  }
   
   console.log('🚀 Cron jobs initialized');
 };

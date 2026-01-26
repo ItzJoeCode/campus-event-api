@@ -4,6 +4,18 @@ import { generateToken } from '../utils/jwt';
 
 const router = express.Router();
 
+// Base route handler
+router.get('/', (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    message: 'Auth route is working',
+    endpoints: {
+      register: 'POST /api/auth/register',
+      login: 'POST /api/auth/login'
+    }
+  });
+});
+
 // Register user
 router.post('/register', async (req: Request, res: Response) => {
   try {

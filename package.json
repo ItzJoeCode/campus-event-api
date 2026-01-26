@@ -8,7 +8,9 @@
     "dev": "tsx src/server.ts",
     "dev:tsx": "npx tsx src/server.ts",
     "dev:watch": "npx tsc --watch & nodemon dist/server.js",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "seed": "tsx scripts/seedDatabase.ts",
+    "seed:prod": "NODE_ENV=production tsx scripts/seedProductionData.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -19,7 +21,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.0",
     "morgan": "^1.10.1",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -30,8 +33,9 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^20.19.30",
     "@types/node-cron": "^3.0.11",
+    "@types/node-fetch": "^2.6.13",
     "nodemon": "^3.0.1",
-    "ts-node": "^10.9.2",
+    "ts-node": "^1.7.1",
     "tsx": "^4.21.0",
     "typescript": "^5.2.2"
   }

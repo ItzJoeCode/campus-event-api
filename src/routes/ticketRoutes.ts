@@ -4,6 +4,18 @@ import Ticket from '../models/Ticket';
 
 const router = express.Router();
 
+// Base route handler
+router.get('/', (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    message: 'Ticket route is working',
+    endpoints: {
+      purchase: 'POST /api/tickets/purchase',
+      userTickets: 'GET /api/tickets/user/:userId'
+    }
+  });
+});
+
 // Purchase ticket
 router.post('/purchase', async (req: Request, res: Response) => {
   try {

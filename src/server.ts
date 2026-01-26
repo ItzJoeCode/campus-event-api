@@ -11,6 +11,9 @@ import ticketRoutes from './routes/ticketRoutes';
 
 // Import background tasks
 import { startCronJobs } from './tasks/ticketExpiration';
+import { version } from 'os';
+import { get } from 'http';
+import { uptime } from 'process';
 
 // Load environment variables
 dotenv.config();
@@ -31,6 +34,32 @@ if (process.env.NODE_ENV === 'development') {
   const morgan = require('morgan');
   app.use(morgan('dev'));
 }
+
+app.get('/', (req: express.Request, res: express.Response) => {
+  res.json({
+    success: true,
+    message: 'Welcome to CampusEvent API! 🎫Campus Event API is running',
+    version: '1.0.0',
+    documentation: 'https://github.com/ItzJoeCode/campus-event-api',
+    endpoints: {
+      health: 'Get /health',
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login'
+      },
+      events: {
+        getAll: 'GET /api/events',
+        create: 'POST /api/events'
+      },
+      tickets: {
+        purchase: 'POST /api/tickets/purchase',
+        getUserTickets: 'GET /api/tickets/user/:userId'
+      }
+    },
+    status: 'API is operational 🚀✅',
+    uptime: process.uptime()
+  });
+});
 
 // Health check endpoint
 app.get('/health', (req: express.Request, res: express.Response) => {
