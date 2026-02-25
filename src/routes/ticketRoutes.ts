@@ -8,10 +8,59 @@ const router = express.Router();
 router.get('/', (req: Request, res: Response) => {
   res.json({
     success: true,
-    message: 'Ticket route is working',
-    endpoints: {
-      purchase: 'POST /api/tickets/purchase',
-      userTickets: 'GET /api/tickets/user/:userId'
+    message: '🎟️ Ticketing API',
+    version: '1.0.0',
+    description: 'Ticket purchase and management endpoints',
+    baseUrl: '/api/tickets',
+    endpoints: [
+      {
+        method: 'POST',
+        path: '/purchase',
+        description: 'Purchase a ticket for an event',
+        auth: true,
+        body: {
+          eventId: { type: 'string', required: true, description: 'ID of the event' },
+          userId: { type: 'string', required: true, description: 'ID of the user' }
+        },
+        responses: {
+          '201': { description: 'Ticket reserved', body: { success: true, ticket: 'Ticket', expiresIn: '24 hours' } },
+          '400': { description: 'No tickets available', body: { success: false, message: 'No tickets available' } },
+          '404': { description: 'Event not found', body: { success: false, message: 'Event not found' } }
+        }
+      },
+      {
+        method: 'GET',
+        path: '/user/:userId',
+        description: 'Get all tickets for a user',
+        auth: true,
+        params: {
+          userId: { type: 'string', required: true, description: 'User ID' }
+        },
+        responses: {
+          '200': { description: 'List of user tickets', body: { success: true, count: 'number', data: 'Ticket[]' } }
+        }
+      }
+    ],
+    ticketStatus: {
+      pending: 'Ticket reserved but not paid (expires in 24h)',
+      confirmed: 'Ticket paid and confirmed',
+      expired: 'Ticket not paid within 24h',
+      used: 'Ticket checked in at event'
+    },
+    examples: {
+      purchase: {
+        curl: `curl -X POST https://campus-event-api-izni.onrender.com/api/tickets/purchase \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \\
+  -d '{
+    "eventId": "65a9f330e3b4c5d6e7f8a9b1",
+    "userId": "65a9f1f2e3b4c5d6e7f8a9b0"
+  }'`
+      },
+      getUserTickets: {
+        curl: `curl https://campus-event-api-izni.onrender.com/api/tickets/user/65a9f1f2e3b4c5d6e7f8a9b0 \\
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"`
+      }
     }
   });
 });

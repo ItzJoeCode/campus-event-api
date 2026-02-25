@@ -8,10 +8,61 @@ const router = express.Router();
 router.get('/', (req: Request, res: Response) => {
   res.json({
     success: true,
-    message: 'Auth route is working',
-    endpoints: {
-      register: 'POST /api/auth/register',
-      login: 'POST /api/auth/login'
+    message: '🔐 Authentication API',
+    version: '1.0.0',
+    description: 'User registration and login endpoints',
+    baseUrl: '/api/auth',
+    endpoints: [
+      {
+        method: 'POST',
+        path: '/register',
+        description: 'Register a new user',
+        auth: false,
+        body: {
+          name: { type: 'string', required: true, description: 'User full name' },
+          email: { type: 'string', required: true, description: 'User email address' },
+          password: { type: 'string', required: true, description: 'Password (min 6 chars)' },
+          studentId: { type: 'string', required: false, description: 'Student ID (optional)' }
+        },
+        responses: {
+          '201': { description: 'User created successfully', body: { success: true, token: 'JWT', user: 'User object' } },
+          '400': { description: 'User already exists', body: { success: false, message: 'User already exists' } }
+        }
+      },
+      {
+        method: 'POST',
+        path: '/login',
+        description: 'Login existing user',
+        auth: false,
+        body: {
+          email: { type: 'string', required: true, description: 'User email' },
+          password: { type: 'string', required: true, description: 'User password' }
+        },
+        responses: {
+          '200': { description: 'Login successful', body: { success: true, token: 'JWT', user: 'User object' } },
+          '401': { description: 'Invalid credentials', body: { success: false, message: 'Invalid credentials' } }
+        }
+      }
+    ],
+    examples: {
+      register: {
+        curl: `curl -X POST https://campus-event-api-izni.onrender.com/api/auth/register \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "John Doe",
+    "email": "john@campus.edu",
+    "password": "password123",
+    "studentId": "STU2024001"
+  }'`
+      },
+      login: {
+        curl: `curl -X POST https://campus-event-api-izni.onrender.com/api/auth/login \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "email": "john@campus.edu",
+    "password": "password123"
+  }'`
+      }
     }
   });
 });

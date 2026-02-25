@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "build": "tsc",
     "dev": "tsx src/server.ts",
-    "dev:tsx": "npx tsx src/server.ts",
-    "dev:watch": "npx tsc --watch & nodemon dist/server.js",
+    "build": "tsc",
+    "start": "node dist/server.js",
     "clean": "rimraf dist",
     "seed": "tsx scripts/seedDatabase.ts",
-    "seed:prod": "NODE_ENV=production tsx scripts/seedProductionData.ts"
+    "seed:prod": "NODE_ENV=production tsx scripts/seedDatabase.ts",
+    "render-postbuild": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
