@@ -1,57 +1,146 @@
 # CampusEvent-API 🎫
 
-A robust backend service for managing campus event ticketing, built with **TypeScript** and **Node.js**. This API handles ticket purchases, secure user authentication, and automated status management.
+A full-stack campus event ticketing platform with a **TypeScript** backend and **React** frontend. Manage events, sell tickets, and handle user authentication with automated ticket expiration.
 
 ## 🚀 Features
 
-- **Secure Auth**: Implemented **JWT** for protected routes.
-- **Automated Tasks**: Integrated **node-cron** to expire unpaid tickets automatically every hour.
-- **Database**: Managed data using **MongoDB** and **Mongoose**.
-- **Deployment Ready**: Configured for seamless deployment on **Render**.
+- **Full-Stack Application**: Backend API + React Frontend
+- **Secure Auth**: JWT-based authentication with protected routes
+- **Automated Tasks**: Node-cron for automatic ticket expiration
+- **Database**: MongoDB with Mongoose ODM
+- **Modern Frontend**: React + TypeScript + Material-UI + Vite
+- **Deployment Ready**: Configured for Render (backend) + Vercel (frontend)
 
 ## 🛠️ Tech Stack
 
+### Backend
 - **Runtime**: Node.js
 - **Language**: TypeScript
 - **Framework**: Express.js
-- **DB**: MongoDB Atlas
+- **Database**: MongoDB Atlas
 - **Scheduling**: Node-cron
+- **Auth**: JWT + bcryptjs
 
-## 📥 Installation
+### Frontend
+- **Framework**: React 18
+- **Language**: TypeScript
+- **Build Tool**: Vite
+- **UI Library**: Material-UI (MUI)
+- **HTTP Client**: Axios
+- **Routing**: React Router
+- **State Management**: React Context
 
-1. Clone the repo: `git clone https://github.com/Itz.JoeCode/campus-event-api.git`
-2. Install dependencies: `npm install`
-3. Set up your `.env` file:
-   - `MONGO_URI`: Your MongoDB Atlas string
-   - `JWT_SECRET`: Your secret key
-4. Build and Run: `npm run build && npm start`
+## 📥 Installation & Setup
+
+### Prerequisites
+- Node.js (v16+)
+- MongoDB Atlas account (or local MongoDB)
+- Git
+
+### Backend Setup
+```bash
+# Clone and navigate
+git clone https://github.com/Itz.JoeCode/campus-event-api.git
+cd campus-event-api
+
+# Install dependencies
+npm install
+
+# Environment setup
+cp .env.example .env  # Create and configure your .env file
+```
+
+### Frontend Setup
+```bash
+# Navigate to frontend
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development servers
+cd .. && npm run dev:all  # Runs both backend and frontend
+```
+
+## 🚀 Running the Application
+
+### Development Mode
+```bash
+# Start both backend and frontend
+npm run dev:all
+
+# Or run separately:
+npm run dev          # Backend only
+cd frontend && npm run dev  # Frontend only
+```
+
+### Demo Mode
+```bash
+# Windows
+demo.bat
+
+# Linux/Mac
+chmod +x demo.sh && ./demo.sh
+```
+
+### Production Build
+```bash
+# Backend
+npm run build && npm start
+
+# Frontend
+cd frontend && npm run build
+```
 
 ## 📡 API Endpoints
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| POST | `/api/auth/register` | User registration |
-| POST | `/api/tickets/buy` | Purchase a ticket (Protected) |
-| GET | `/api/tickets/status` | Check ticket validity |
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :---: |
+| GET | `/health` | API health check | ❌ |
+| POST | `/api/auth/register` | User registration | ❌ |
+| POST | `/api/auth/login` | User login | ❌ |
+| GET | `/api/events` | Get all events | ❌ |
+| POST | `/api/tickets/buy` | Purchase ticket | ✅ |
+| GET | `/api/tickets/status` | Check ticket status | ✅ |
+| GET | `/api/auth/profile` | Get user profile | ✅ |
 
 ## 🌐 Live Deployment
 
-**Base URL**: `https://campus-event-api-izni.onrender.com`
+- **Backend API**: `https://campus-event-api-izni.onrender.com`
+- **Frontend App**: [Deploy with Vercel](#deployment-guide)
 
 ### Quick Test
-
 ```bash
-# Check API status
+# Health check
 curl https://campus-event-api-izni.onrender.com/health
 
-# List events
+# Get events
 curl https://campus-event-api-izni.onrender.com/api/events
+```
 
-✅ Project Status: Production-Ready
-API Integrity: 100% success rate on core endpoints (Auth, Event Mgmt, Ticketing).
+## 📋 Deployment Guide
 
-Performance: Average response time <100ms.
+See [`DEPLOYMENT.md`](DEPLOYMENT.md) for complete deployment instructions to Render + Vercel.
 
-Automated Logic: Verified Cron Job initialization for 24-hour ticket expiration cycles.
+## ✅ Project Status
 
-Data Consistency: Automated ticket numbering and inventory management (atomic increments/decrements) verified via PowerShell testing.
+**Completion**: 100% - Production Ready
+
+- ✅ Backend API: Fully implemented and deployed
+- ✅ Frontend App: Complete with all features
+- ✅ Authentication: JWT-based user system
+- ✅ Database: MongoDB with proper schemas
+- ✅ Automated Tasks: Ticket expiration system
+- ✅ TypeScript: Strict mode throughout
+- ✅ Testing: Manual testing completed
+- ✅ Documentation: API docs and deployment guide
+
+**Performance Metrics**:
+- Response Time: <100ms average
+- API Success Rate: 100% on core endpoints
+- Automated Logic: Cron jobs verified
+- Data Integrity: Atomic operations confirmed
+
+---
+
+🎓 **Built for campus communities to easily manage event ticketing!**

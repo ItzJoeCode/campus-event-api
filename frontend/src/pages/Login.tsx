@@ -10,7 +10,7 @@ import {
   Alert,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { LockOpen } from '@mui/icons-material';
+// import { Lock as LockOpenIcon } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
@@ -49,7 +49,7 @@ const Login: React.FC = () => {
     <Container maxWidth="sm" sx={{ mt: 8 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
         <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <LockOpen sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+          <Typography variant="h1" sx={{ mb: 2 }}>🔐</Typography>
           <Typography variant="h4" component="h1" gutterBottom>
             Welcome Back
           </Typography>
@@ -70,7 +70,7 @@ const Login: React.FC = () => {
             label="Email Address"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             margin="normal"
             required
             autoFocus
@@ -81,7 +81,7 @@ const Login: React.FC = () => {
             label="Password"
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             margin="normal"
             required
           />

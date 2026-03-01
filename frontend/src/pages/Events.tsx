@@ -14,7 +14,7 @@ import {
   CircularProgress,
   Alert,
 } from '@mui/material';
-import { Event, CalendarToday, LocationOn, People } from '@mui/icons-material';
+// import { EventAvailable as EventIcon, Today as CalendarTodayIcon, LocationOn as LocationOnIcon, Group as PeopleIcon } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
@@ -134,7 +134,7 @@ const Events: React.FC = () => {
               label="Search events"
               variant="outlined"
               value={filters.search}
-              onChange={(e) => handleFilterChange('search', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFilterChange('search', e.target.value)}
               placeholder="Search by title, description, or venue..."
             />
           </Grid>
@@ -144,7 +144,7 @@ const Events: React.FC = () => {
               select
               label="Category"
               value={filters.category}
-              onChange={(e) => handleFilterChange('category', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleFilterChange('category', e.target.value)}
             >
               {categories.map((category) => (
                 <MenuItem key={category} value={category}>
@@ -175,7 +175,7 @@ const Events: React.FC = () => {
       {/* Events Grid */}
       {filteredEvents.length === 0 ? (
         <Box textAlign="center" py={6}>
-          <Event sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
+          <Typography variant="h1" sx={{ mb: 2 }}>🎪</Typography>
           <Typography variant="h5" gutterBottom>
             No events found
           </Typography>
@@ -224,19 +224,19 @@ const Events: React.FC = () => {
                     {/* Event Details */}
                     <Box sx={{ mt: 2 }}>
                       <Box display="flex" alignItems="center" mb={1}>
-                        <CalendarToday sx={{ mr: 1, fontSize: 16, color: 'text.secondary' }} />
+                        <Typography sx={{ mr: 1, fontSize: 16, color: 'text.secondary' }}>📅</Typography>
                         <Typography variant="body2">
                           {format(new Date(event.date), 'EEE, MMM dd, yyyy • hh:mm a')}
                         </Typography>
                       </Box>
 
                       <Box display="flex" alignItems="center" mb={1}>
-                        <LocationOn sx={{ mr: 1, fontSize: 16, color: 'text.secondary' }} />
+                        <Typography sx={{ mr: 1, fontSize: 16, color: 'text.secondary' }}>📍</Typography>
                         <Typography variant="body2">{event.venue}</Typography>
                       </Box>
 
                       <Box display="flex" alignItems="center" mb={1}>
-                        <People sx={{ mr: 1, fontSize: 16, color: 'text.secondary' }} />
+                        <Typography sx={{ mr: 1, fontSize: 16, color: 'text.secondary' }}>👥</Typography>
                         <Typography variant="body2">
                           {event.availableTickets} of {event.totalTickets} tickets available
                         </Typography>

@@ -14,13 +14,13 @@ import {
   Alert,
   Paper,
 } from '@mui/material';
-import {
-  Event,
-  ConfirmationNumber,
-  CheckCircle,
-  Pending,
-  AccessTime,
-} from '@mui/icons-material';
+// import {
+//   EventAvailable as EventIcon,
+//   ConfirmationNumber as ConfirmationNumberIcon,
+//   CheckCircle as CheckCircleIcon,
+//   Schedule as PendingIcon,
+//   AccessTime as AccessTimeIcon,
+// } from '@mui/icons-material';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
@@ -89,16 +89,16 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'confirmed': return <CheckCircle color="success" />;
-      case 'pending': return <Pending color="warning" />;
-      case 'expired': return <AccessTime color="error" />;
-      default: return <ConfirmationNumber />;
+      case 'confirmed': return '✅';
+      case 'pending': return '⏳';
+      case 'expired': return '❌';
+      default: return '🎫';
     }
   };
 
@@ -143,10 +143,10 @@ const Dashboard: React.FC = () => {
       {/* Stats Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {[
-          { label: 'Total Tickets', value: stats.total, icon: <ConfirmationNumber />, color: 'primary.main' },
-          { label: 'Confirmed', value: stats.confirmed, icon: <CheckCircle />, color: 'success.main' },
-          { label: 'Pending', value: stats.pending, icon: <Pending />, color: 'warning.main' },
-          { label: 'Used', value: stats.used, icon: <Event />, color: 'info.main' },
+          { label: 'Total Tickets', value: stats.total, icon: '🎫', color: 'primary.main' },
+          { label: 'Confirmed', value: stats.confirmed, icon: '✅', color: 'success.main' },
+          { label: 'Pending', value: stats.pending, icon: '⏳', color: 'warning.main' },
+          { label: 'Used', value: stats.used, icon: '🎪', color: 'info.main' },
         ].map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <Card>
@@ -183,7 +183,7 @@ const Dashboard: React.FC = () => {
         <TabPanel value={tabValue} index={0}>
           {filteredTickets().length === 0 ? (
             <Box textAlign="center" py={4}>
-              <ConfirmationNumber sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
+              <Typography variant="h1" sx={{ mb: 2 }}>🎫</Typography>
               <Typography variant="h5" gutterBottom>
                 No tickets yet
               </Typography>
@@ -301,7 +301,6 @@ const Dashboard: React.FC = () => {
             <Button
               fullWidth
               variant="contained"
-              startIcon={<Event />}
               href="/events"
             >
               Browse Events
@@ -311,7 +310,6 @@ const Dashboard: React.FC = () => {
             <Button
               fullWidth
               variant="outlined"
-              startIcon={<ConfirmationNumber />}
               onClick={fetchTickets}
             >
               Refresh Tickets
@@ -321,7 +319,6 @@ const Dashboard: React.FC = () => {
             <Button
               fullWidth
               variant="outlined"
-              startIcon={<CheckCircle />}
               disabled={stats.pending === 0}
             >
               Pay Pending Tickets

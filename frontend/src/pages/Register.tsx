@@ -10,7 +10,7 @@ import {
   Alert,
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { PersonAdd } from '@mui/icons-material';
+// import { PersonAdd as PersonAddIcon } from '@mui/icons-material';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
@@ -73,7 +73,7 @@ const Register: React.FC = () => {
     <Container maxWidth="sm" sx={{ mt: 8 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
         <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <PersonAdd sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+          <Typography variant="h1" sx={{ mb: 2 }}>👤</Typography>
           <Typography variant="h4" component="h1" gutterBottom>
             Join CampusEvents
           </Typography>

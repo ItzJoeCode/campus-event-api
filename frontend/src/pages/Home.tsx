@@ -11,7 +11,7 @@ import {
   Chip,
   CircularProgress,
 } from '@mui/material';
-import { Event, ArrowForward } from '@mui/icons-material';
+// import { EventAvailable as EventIcon, ArrowForward as ArrowForwardIcon } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { eventAPI, healthAPI } from '../services/api';
@@ -70,10 +70,9 @@ const Home: React.FC = () => {
             size="large"
             component={Link}
             to="/events"
-            endIcon={<ArrowForward />}
             sx={{ mr: 2 }}
           >
-            Browse Events
+            Browse Events →
           </Button>
           <Button
             variant="outlined"
@@ -127,10 +126,9 @@ const Home: React.FC = () => {
                     size="small"
                     component={Link}
                     to={`/events`}
-                    startIcon={<Event />}
                     fullWidth
                   >
-                    View Details
+                    🎪 View Details
                   </Button>
                 </CardActions>
               </Card>
