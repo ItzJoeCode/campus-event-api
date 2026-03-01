@@ -107,7 +107,7 @@ cd frontend && npm run build
 ## 🌐 Live Deployment
 
 - **Backend API**: `https://campus-event-api-izni.onrender.com`
-- **Frontend App**: [Deploy with Vercel](#deployment-guide)
+- **Frontend App**: https://campus-event-jd6z11g0i-joseph-emmanuels-projects-060883c2.vercel.app
 
 ### Quick Test
 ```bash
