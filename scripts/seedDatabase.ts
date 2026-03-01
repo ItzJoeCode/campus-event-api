@@ -33,7 +33,7 @@ const sampleEvents = [
   }
 ];
 
-const seedDatabase = async () => {
+export const seedDatabase = async () => {
   try {
     const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/campus-event-api';
     
@@ -86,4 +86,9 @@ const seedDatabase = async () => {
   }
 };
 
-seedDatabase();
+// If this file is run directly (e.g. via `npm run seed`), execute the seeding logic.
+if (require.main === module) {
+  seedDatabase()
+    .then(() => process.exit(0))
+    .catch(() => process.exit(1));
+}

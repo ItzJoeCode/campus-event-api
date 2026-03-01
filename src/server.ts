@@ -64,6 +64,21 @@ app.get('/', (req: express.Request, res: express.Response) => {
   });
 });
 
+// convenience seed endpoint - only enabled when explicitly allowed
+// Usage: set ENABLE_SEED=true (or run locally) then GET /api/seed
+if (process.env.ENABLE_SEED === 'true') {
+  app.get('/api/seed', async (_req: express.Request, res: express.Response) => {
+    try {
+      const { seedDatabase } = await import('../scripts/seedDatabase');
+      await seedDatabase();
+      res.json({ message: 'Database seeded' });
+    } catch (err) {
+      console.error('Seed error', err);
+      res.status(500).json({ error: 'Seeding failed', details: err });
+    }
+  });
+}
+
 // Health check endpoint
 app.get('/health', (req: express.Request, res: express.Response) => {
   const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
