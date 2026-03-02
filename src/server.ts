@@ -13,7 +13,6 @@ import ticketRoutes from './routes/ticketRoutes';
 import { startCronJobs } from './tasks/ticketExpiration';
 import { version } from 'os';
 import { get } from 'http';
-import { uptime } from 'process';
 
 // Load environment variables
 dotenv.config();
@@ -69,7 +68,15 @@ app.get('/', (req: express.Request, res: express.Response) => {
 if (process.env.ENABLE_SEED === 'true') {
   app.get('/api/seed', async (_req: express.Request, res: express.Response) => {
     try {
-      const { seedDatabase } = await import('../scripts/seedDatabase');
+      // Import .js in production (compiled output), but import the TS module during development
+      const seedPath = process.env.NODE_ENV === 'production'
+        ? '../scripts/seedDatabase.js'
+        : '../scripts/seedDatabase';
+      const seedModule = await import(seedPath);
+      const seedDatabase = (seedModule as any).seedDatabase || (seedModule as any).default;
+      if (typeof seedDatabase !== 'function') {
+        throw new Error('seedDatabase not found in module');
+      }
       await seedDatabase();
       res.json({ message: 'Database seeded' });
     } catch (err) {

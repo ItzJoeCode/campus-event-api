@@ -7,8 +7,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "clean": "rimraf dist",
-    "seed": "tsx scripts/seedDatabase.ts",
-    "seed:prod": "NODE_ENV=production tsx scripts/seedDatabase.ts",
+    "seed": "tsx scripts/seedCli.ts",
+    "seed:prod": "NODE_ENV=production tsx scripts/seedCli.ts",
     "render-postbuild": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

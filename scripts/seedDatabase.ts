@@ -78,17 +78,8 @@ export const seedDatabase = async () => {
     console.log('- Events:', events.map(e => e.title));
     console.log('- User:', user.email);
     console.log('- Ticket:', ticket.ticketNumber);
-    
-    process.exit(0);
   } catch (error) {
     console.error('❌ Seeding failed:', error);
-    process.exit(1);
+    throw error; // propagate so caller can handle
   }
 };
-
-// If this file is run directly (e.g. via `npm run seed`), execute the seeding logic.
-if (require.main === module) {
-  seedDatabase()
-    .then(() => process.exit(0))
-    .catch(() => process.exit(1));
-}
