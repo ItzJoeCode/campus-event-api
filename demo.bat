@@ -31,7 +31,7 @@ echo    PORT: %PORT%
 REM Seed the database
 echo.
 echo 🌱 Seeding database with demo data...
-cd scripts
+cd src\scripts
 npx ts-node seedDatabase.ts
 cd ..
 if %errorlevel% neq 0 (

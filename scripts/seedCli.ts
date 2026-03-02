@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { seedDatabase } from './seedDatabase';
+import { seedDatabase } from '../src/scripts/seedDatabase';
 
 // run the seeding function and exit appropriately
 (async () => {

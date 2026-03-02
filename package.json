@@ -8,7 +8,7 @@
     "start": "node dist/server.js",
     "clean": "rimraf dist",
     "seed": "tsx scripts/seedCli.ts",
-    "seed:prod": "NODE_ENV=production tsx scripts/seedCli.ts",
+    "seed:prod": "NODE_ENV=production node dist/scripts/seedDatabase.js",
     "render-postbuild": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

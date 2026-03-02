@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import Event from '../src/models/Event';
-import User from '../src/models/User';
-import Ticket from '../src/models/Ticket';
+import Event from '../models/Event';
+import User from '../models/User';
+import Ticket from '../models/Ticket';
 
 dotenv.config();
 
@@ -80,6 +80,6 @@ export const seedDatabase = async () => {
     console.log('- Ticket:', ticket.ticketNumber);
   } catch (error) {
     console.error('❌ Seeding failed:', error);
-    throw error; // propagate so caller can handle
+    throw error;
   }
 };
