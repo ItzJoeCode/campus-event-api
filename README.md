@@ -104,14 +104,19 @@ cd frontend && npm run build
 | GET | `/api/tickets/status` | Check ticket status | ✅ |
 | GET | `/api/auth/profile` | Get user profile | ✅ |
 
-## 🌐 Live Deployment
+## 🌐 Live Demo
 
-- **Backend API**: `https://campus-event-api-izni.onrender.com`
-- **Frontend App**: https://campus-event-jd6z11g0i-joseph-emmanuels-projects-060883c2.vercel.app
+- **Frontend Application**: [https://campus-event-api.vercel.app](https://campus-event-api.vercel.app)
+- **Backend API**: [https://campus-event-api-izni.onrender.com](https://campus-event-api-izni.onrender.com)
+- **API Health Check**: [https://campus-event-api-izni.onrender.com/health](https://campus-event-api-izni.onrender.com/health)
+
+### Test Credentials
+Email: john@campus.edu  
+Password: password123
 
 ### Quick Test
 ```bash
-# Health check
+# Check if API is running
 curl https://campus-event-api-izni.onrender.com/health
 
 # Get events
