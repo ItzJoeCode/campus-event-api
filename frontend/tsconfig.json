@@ -23,7 +23,6 @@
 
     /* Vite */
     "types": ["node"],
-    "ignoreDeprecations": "6.0",
 
     /* Path aliases */
     "baseUrl": ".",

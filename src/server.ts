@@ -3,73 +3,125 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import helmet from 'helmet';
-
-// Import routes
-import authRoutes from './routes/authRoutes';
-import eventRoutes from './routes/eventRoutes';
-import ticketRoutes from './routes/ticketRoutes';
+import morgan from 'morgan';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
 
 // Import background tasks
 import { startCronJobs } from './tasks/ticketExpiration';
-import { version } from 'os';
-import { get } from 'http';
-
-// seed logic (moved into src so compilation includes it)
-import { seedDatabase } from './scripts/seedDatabase';
 
 // Load environment variables
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/campus-event-api';
-
-// Initialize Express app
 const app = express();
 
+// ============================================
+// PRODUCTION OPTIMIZATIONS
+// ============================================
+
+// 1. Enable gzip compression (mentioned in DEPLOYMENT.md)
+app.use(compression());
+
+// 2. Configure CORS based on environment
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? [process.env.FRONTEND_URL || 'https://campus-event-api.vercel.app']
+  : ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:3000'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
+
+// 3. Rate limiting (mentioned in DEPLOYMENT.md)
+// General API limiter
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: {
+    success: false,
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+// Stricter limiter for auth endpoints (prevent brute force)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 login/register attempts per 15 minutes
+  message: {
+    success: false,
+    message: 'Too many authentication attempts, please try again after 15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiting
+app.use('/api/', apiLimiter); // Apply to all API routes
+app.use('/api/auth/login', authLimiter); // Stricter for login
+app.use('/api/auth/register', authLimiter); // Stricter for register
+
+// ============================================
+// SECURITY & LOGGING
+// ============================================
+
 // Security middleware
-app.use(helmet());
-app.use(cors());
+app.use(helmet({
+  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
+}));
 
-// Body parsing middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Logging middleware
+// Logging (with environment awareness)
 if (process.env.NODE_ENV === 'development') {
-  const morgan = require('morgan');
   app.use(morgan('dev'));
+} else {
+  // Production logging - less verbose but includes useful info
+  app.use(morgan('combined', {
+    skip: (req, res) => res.statusCode < 400 // Skip successful requests in production logs
+  }));
 }
 
-app.get('/', (req: express.Request, res: express.Response) => {
+// Body parsing
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// ============================================
+// EXISTING ROUTES (keep your current routes)
+// ============================================
+
+// Health check
+app.get('/health', (req, res) => {
   res.json({
-    success: true,
-    message: 'Welcome to CampusEvent API! 🎫Campus Event API is running',
-    version: '1.0.0',
-    documentation: 'https://github.com/ItzJoeCode/campus-event-api',
-    endpoints: {
-      health: 'Get /health',
-      auth: {
-        register: 'POST /api/auth/register',
-        login: 'POST /api/auth/login'
-      },
-      events: {
-        getAll: 'GET /api/events',
-        create: 'POST /api/events'
-      },
-      tickets: {
-        purchase: 'POST /api/tickets/purchase',
-        getUserTickets: 'GET /api/tickets/user/:userId'
-      }
-    },
-    status: 'API is operational 🚀✅',
-    uptime: process.uptime()
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV,
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
+
+// API Routes
+import authRoutes from './routes/authRoutes';
+import eventRoutes from './routes/eventRoutes';
+import ticketRoutes from './routes/ticketRoutes';
+
+// seed logic (moved into src so compilation includes it)
+import { seedDatabase } from './scripts/seedDatabase';
 
 // convenience seed endpoint - only enabled when explicitly allowed
 // Usage: set ENABLE_SEED=true (or run locally) then GET /api/seed
 if (process.env.ENABLE_SEED === 'true') {
-  app.get('/api/seed', async (_req: express.Request, res: express.Response) => {
+  app.get('/api/seed', async (_req, res) => {
     try {
       await seedDatabase();
       res.json({ message: 'Database seeded' });
@@ -80,58 +132,89 @@ if (process.env.ENABLE_SEED === 'true') {
   });
 }
 
-// Health check endpoint
-app.get('/health', (req: express.Request, res: express.Response) => {
-  const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
-  
-  res.status(200).json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    service: 'CampusEvent-API',
-    database: dbStatus,
-    message: 'Server is fully operational'
-  });
-});
-
-// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/tickets', ticketRoutes);
 
+const PORT = process.env.PORT || 5000;
+
+// Root endpoint with API documentation
+app.get('/', (req, res) => {
+  const baseUrl = process.env.NODE_ENV === 'production'
+    ? process.env.BACKEND_URL || 'https://campus-event-api-izni.onrender.com'
+    : `http://localhost:${PORT}`;
+
+  res.json({
+    success: true,
+    message: '🎫 CampusEvent API',
+    version: '1.0.0',
+    environment: process.env.NODE_ENV,
+    endpoints: {
+      health: `${baseUrl}/health`,
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login'
+      },
+      events: {
+        getAll: 'GET /api/events',
+        create: 'POST /api/events (protected)'
+      },
+      tickets: {
+        purchase: 'POST /api/tickets/purchase (protected)',
+        getUserTickets: 'GET /api/tickets/user/:userId (protected)'
+      }
+    }
+  });
+});
+
 // 404 handler
-app.use((req: express.Request, res: express.Response) => {
+app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: `Route ${req.originalUrl} not found`
+    message: `Route ${req.method} ${req.originalUrl} not found`
   });
 });
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', err);
+
+  // Don't leak error details in production
+  const message = process.env.NODE_ENV === 'production'
+    ? 'Internal server error'
+    : err.message;
+
   res.status(500).json({
     success: false,
-    message: 'Internal server error',
-    ...(process.env.NODE_ENV === 'development' && { error: err.message })
+    message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   });
 });
 
-// Start server
+// ============================================
+// SERVER STARTUP
+// ============================================
+
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/campus-event-api';
+
 const startServer = async () => {
   try {
-    // Connect to MongoDB
     await mongoose.connect(MONGODB_URI);
     console.log('✅ Connected to MongoDB');
-    
+
     // Start background tasks
     startCronJobs();
-    
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
-      console.log(`📚 API Documentation: http://localhost:${PORT}/`);
-      console.log(`🏥 Health Check: http://localhost:${PORT}/health`);
+
+    app.listen(Number(PORT), () => {
+      console.log(`
+🚀 Server running on port ${PORT}
+🌍 Environment: ${process.env.NODE_ENV || 'development'}
+🔒 Security: Helmet, CORS, Rate limiting enabled
+📦 Compression: Gzip enabled
+📚 Health check: http://localhost:${PORT}/health
+      `);
     });
-    
+
   } catch (error) {
     console.error('❌ Failed to start server:', error);
     process.exit(1);
