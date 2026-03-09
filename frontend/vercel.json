@@ -1,0 +1,33 @@
+{
+    "buildCommand": "npm run build",
+    "installCommand": "npm install",
+    "outputDirectory": "dist",
+    "builds": [
+        {
+            "src": "package.json",
+            "use": "@vercel/static-build",
+            "config": {
+                "concurrentBuilds": true
+            }
+        }
+    ],
+    "redirects": [
+        {
+            "source": "/(.*)",
+            "has": [
+                {
+                    "type": "header",
+                    "key": "x-vercel-protection-bypass",
+                    "value": "(?<secret>.*)"
+                }
+            ],
+            "destination": "https://campus-event-api.vercel.app/:path*"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/index.html"
+        }
+    ]
+}
