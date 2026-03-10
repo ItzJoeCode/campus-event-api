@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import Event from '../models/Event';
 import Ticket from '../models/Ticket';
 
@@ -118,6 +119,10 @@ router.post('/purchase', async (req: Request, res: Response) => {
 
 // Get user tickets
 router.get('/user/:userId', async (req: Request, res: Response) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+    return res.status(400).json({ success: false, message: 'Invalid User ID' });
+  }
+
   try {
     const tickets = await Ticket.find({ user: req.params.userId })
       .populate('event', 'title date venue')
