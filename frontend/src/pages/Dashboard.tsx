@@ -71,7 +71,7 @@ const Dashboard: React.FC = () => {
     try {
       setLoading(true);
       const response = await ticketAPI.getUserTickets(user!._id);
-      const ticketsData = response.data.data;
+      const ticketsData = Array.isArray(response.data.data) ? response.data.data : [];
       setTickets(ticketsData);
 
       // Calculate stats

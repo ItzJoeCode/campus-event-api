@@ -149,7 +149,7 @@ const Events: React.FC = () => {
             >
               {categories.map((category) => (
                 <MenuItem key={category} value={category}>
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                  {category ? category.charAt(0).toUpperCase() + category.slice(1) : ''}
                 </MenuItem>
               ))}
             </TextField>
@@ -219,7 +219,7 @@ const Events: React.FC = () => {
 
                     {/* Description */}
                     <Typography color="text.secondary" paragraph>
-                      {event.description.substring(0, 120)}...
+                      {event.description?.substring(0, 120)}...
                     </Typography>
 
                     {/* Event Details */}
