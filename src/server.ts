@@ -23,17 +23,29 @@ const app = express();
 app.use(compression());
 
 // 2. Configure CORS based on environment
-const allowedOrigins = process.env.NODE_ENV === 'production'
-  ? [process.env.FRONTEND_URL || 'https://campus-event-api.vercel.app']
-  : ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:3000'];
-
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+    // In development or if explicitly allowed, permit all
+    if (process.env.NODE_ENV !== 'production' || process.env.ALLOW_ALL_ORIGINS === 'true') {
+      return callback(null, true);
+    }
+
+    const allowedOrigins = [
+      process.env.FRONTEND_URL,
+      'https://campus-event-api.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:5173'
+    ].filter(Boolean) as string[];
+
+    // Check if origin matches any allowed origin or Vercel preview URL
+    const isAllowed = allowedOrigins.some(o => origin === o) ||
+                      origin.endsWith('.vercel.app');
+
+    if (!isAllowed) {
+      const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
       return callback(new Error(msg), false);
     }
     return callback(null, true);
@@ -78,7 +90,12 @@ app.use('/api/auth/register', authLimiter); // Stricter for register
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+    },
+  },
 }));
 
 // Logging (with environment awareness)
