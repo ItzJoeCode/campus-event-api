@@ -52,7 +52,8 @@ const Events: React.FC = () => {
     try {
       setLoading(true);
       const response = await eventAPI.getAll();
-      setEvents(response.data.data);
+      const eventData = Array.isArray(response.data.data) ? response.data.data : [];
+      setEvents(eventData);
       setError(null);
     } catch (err: any) {
       setError('Failed to load events. Please try again later.');

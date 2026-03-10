@@ -29,7 +29,8 @@ const Home: React.FC = () => {
         setApiStatus('online');
         
         const response = await eventAPI.getAll();
-        setEvents(response.data.data.slice(0, 3));
+        const eventData = Array.isArray(response.data.data) ? response.data.data : [];
+        setEvents(eventData.slice(0, 3));
       } catch (error) {
         setApiStatus('offline');
         console.error('Failed to fetch data:', error);
