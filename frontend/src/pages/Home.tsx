@@ -106,7 +106,7 @@ const Home: React.FC = () => {
                     {event.title}
                   </Typography>
                   <Typography color="text.secondary" paragraph>
-                    {event.description.substring(0, 100)}...
+                    {event.description?.substring(0, 100)}...
                   </Typography>
                   <Box sx={{ mt: 2 }}>
                     <Typography variant="body2" color="text.secondary">
