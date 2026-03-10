@@ -11,19 +11,6 @@
             }
         }
     ],
-    "redirects": [
-        {
-            "source": "/(.*)",
-            "has": [
-                {
-                    "type": "header",
-                    "key": "x-vercel-protection-bypass",
-                    "value": "(?<secret>.*)"
-                }
-            ],
-            "destination": "https://campus-event-api.vercel.app/:path*"
-        }
-    ],
     "routes": [
         {
             "src": "/(.*)",

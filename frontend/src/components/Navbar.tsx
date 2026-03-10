@@ -11,7 +11,7 @@ import {
   MenuItem,
   Avatar,
 } from '@mui/material';
-// import { EventAvailable as EventIcon, Person as AccountCircleIcon } from '@mui/icons-material';
+import EventIcon from '@mui/icons-material/EventAvailable';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar: React.FC = () => {
@@ -36,9 +36,10 @@ const Navbar: React.FC = () => {
   return (
     <AppBar position="static">
       <Toolbar>
+        <EventIcon sx={{ mr: 2 }} />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
-            🎓 CampusEvents
+          <Link to="/" style={{ textDecoration: 'none', color: 'white', display: 'flex', alignItems: 'center' }}>
+            CampusEvents
           </Link>
         </Typography>
 
