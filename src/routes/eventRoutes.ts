@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import Event from '../models/Event';
 
 const router = express.Router();
@@ -54,6 +55,10 @@ router.get('/docs', (req: Request, res: Response) => {
 
 // Get single event
 router.get('/:id', async (req: Request, res: Response) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ success: false, message: 'Invalid Event ID' });
+  }
+
   try {
     const event = await Event.findById(req.params.id).populate('organizer', 'name email');
     

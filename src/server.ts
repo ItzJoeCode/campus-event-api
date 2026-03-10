@@ -94,6 +94,7 @@ app.use(helmet({
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
       "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      "connect-src": ["'self'", "https://campus-event-api-izni.onrender.com", "*.vercel.app"],
     },
   },
 }));

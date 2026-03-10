@@ -250,7 +250,7 @@ const Events: React.FC = () => {
                         ${event.price}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        By: {typeof event.organizer === 'object' ? event.organizer.name : 'Unknown'}
+                        By: {(event.organizer && typeof event.organizer === 'object') ? (event.organizer as any).name : 'Unknown'}
                       </Typography>
                     </Box>
                   </CardContent>

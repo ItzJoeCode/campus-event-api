@@ -62,15 +62,17 @@ const Dashboard: React.FC = () => {
   });
 
   useEffect(() => {
-    if (user) {
+    if (user?._id) {
       fetchTickets();
     }
-  }, [user]);
+  }, [user?._id]);
 
   const fetchTickets = async () => {
+    if (!user?._id) return;
+
     try {
       setLoading(true);
-      const response = await ticketAPI.getUserTickets(user!._id);
+      const response = await ticketAPI.getUserTickets(user._id);
       const ticketsData = Array.isArray(response.data.data) ? response.data.data : [];
       setTickets(ticketsData);
 
@@ -205,7 +207,7 @@ const Dashboard: React.FC = () => {
                           <Box display="flex" alignItems="center" mb={1}>
                             {getStatusIcon(ticket.status)}
                             <Typography variant="h6" component="h3" sx={{ ml: 1 }}>
-                              {typeof ticket.event === 'object' ? ticket.event.title : 'Event'}
+                              {(ticket.event && typeof ticket.event === 'object') ? (ticket.event as any).title : 'Event'}
                             </Typography>
                           </Box>
                           <Box display="flex" gap={2} flexWrap="wrap" mb={2}>
@@ -227,10 +229,10 @@ const Dashboard: React.FC = () => {
                               />
                             )}
                           </Box>
-                          {typeof ticket.event === 'object' && (
+                          {ticket.event && typeof ticket.event === 'object' && (
                             <Typography color="text.secondary">
-                              📅 {format(new Date(ticket.event.date), 'MMM dd, yyyy')} • 
-                              🏛️ {ticket.event.venue} • 
+                              📅 {format(new Date((ticket.event as any).date), 'MMM dd, yyyy')} •
+                              🏛️ {(ticket.event as any).venue} •
                               💰 ${ticket.price}
                             </Typography>
                           )}
