@@ -100,7 +100,7 @@ router.post('/register', async (req: Request, res: Response) => {
       success: true,
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -150,7 +150,7 @@ router.post('/login', async (req: Request, res: Response) => {
       success: true,
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,

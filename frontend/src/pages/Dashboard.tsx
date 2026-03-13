@@ -62,13 +62,20 @@ const Dashboard: React.FC = () => {
   });
 
   useEffect(() => {
-    if (user?._id) {
-      fetchTickets();
+    if (user) {
+      if (user._id) {
+        fetchTickets();
+      } else {
+        setLoading(false);
+      }
     }
-  }, [user?._id]);
+  }, [user]);
 
   const fetchTickets = async () => {
-    if (!user?._id) return;
+    if (!user?._id) {
+      setLoading(false);
+      return;
+    }
 
     try {
       setLoading(true);
@@ -79,7 +86,7 @@ const Dashboard: React.FC = () => {
       // Calculate stats
       const stats = {
         total: ticketsData.length,
-        confirmed: ticketsData.filter((t: Ticket) => t.status === 'confirmed').length,
+        confirmed: ticketsData.filter((t: Ticket) => (t.status === 'confirmed' || t.status === 'paid')).length,
         pending: ticketsData.filter((t: Ticket) => t.status === 'pending').length,
         used: ticketsData.filter((t: Ticket) => t.checkedIn).length,
       };
@@ -97,7 +104,8 @@ const Dashboard: React.FC = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'confirmed': return '✅';
+      case 'confirmed':
+      case 'paid': return '✅';
       case 'pending': return '⏳';
       case 'expired': return '❌';
       default: return '🎫';
@@ -106,7 +114,8 @@ const Dashboard: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'confirmed': return 'success';
+      case 'confirmed':
+      case 'paid': return 'success';
       case 'pending': return 'warning';
       case 'expired': return 'error';
       default: return 'default';
@@ -116,7 +125,7 @@ const Dashboard: React.FC = () => {
   const filteredTickets = () => {
     switch (tabValue) {
       case 0: return tickets;
-      case 1: return tickets.filter(t => t.status === 'confirmed');
+      case 1: return tickets.filter(t => t.status === 'confirmed' || t.status === 'paid');
       case 2: return tickets.filter(t => t.status === 'pending');
       default: return tickets;
     }
@@ -212,7 +221,7 @@ const Dashboard: React.FC = () => {
                           </Box>
                           <Box display="flex" gap={2} flexWrap="wrap" mb={2}>
                             <Chip
-                              label={ticket.status.toUpperCase()}
+                              label={(ticket.status === 'paid' ? 'confirmed' : ticket.status).toUpperCase()}
                               color={getStatusColor(ticket.status) as any}
                               size="small"
                             />
@@ -252,7 +261,7 @@ const Dashboard: React.FC = () => {
                                 Complete Payment
                               </Button>
                             )}
-                            {ticket.status === 'confirmed' && !ticket.checkedIn && (
+                            {(ticket.status === 'confirmed' || ticket.status === 'paid') && !ticket.checkedIn && (
                               <Button
                                 variant="outlined"
                                 color="success"
