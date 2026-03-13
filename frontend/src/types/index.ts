@@ -27,7 +27,7 @@ export interface Ticket {
   event: Event | string;
   user: string;
   price: number;
-  status: 'pending' | 'confirmed' | 'expired' | 'used';
+  status: 'pending' | 'paid' | 'confirmed' | 'expired' | 'used';
   paymentMethod: string;
   checkedIn: boolean;
   ticketNumber: string;
